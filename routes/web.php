@@ -14,5 +14,7 @@ Route::get('surat/{surat}/download', [SuratController::class, 'download'])->name
 
 Route::resource('kategori', KategoriController::class);
 
-Route::view('about', 'about')->name('about');
+Route::get('/about', function () {
+    return view('about');
+})->name('about');
 
