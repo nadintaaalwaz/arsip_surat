@@ -26,17 +26,21 @@
         }
         .profile-picture {
             /* Sesuaikan ukuran agar lebih besar dan sesuai proporsi foto asli (899 x 1225) */
-            width: 180px;
-            height: 245px;
+            width: 180px; /* Lebar foto */
+            height: 245px; /* Tinggi foto, disesuaikan agar rasio sesuai */
             border: 2px solid black;
             border-radius: 0;
             overflow: hidden;
+            display: flex; /* Menggunakan flexbox untuk penempatan teks */
+            align-items: center; /* Menyelaraskan vertikal */
+            justify-content: center; /* Menyelaraskan horizontal */
         }
         .profile-picture img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: cover; /* Memastikan gambar menutupi area tanpa terdistorsi */
         }
+        /* CSS asli untuk hover sidebar dipertahankan */
         .nav-link:hover {
             background-color: #e2e6ea;
             color: #0d6efd;
@@ -60,17 +64,26 @@
         }
 
         /* Aturan baru untuk menyesuaikan ukuran font teks */
-        .d-flex strong {
+        .d-flex .text-container strong {
             font-size: 1.25rem; /* Membuat teks "Aplikasi ini dibuat oleh:" lebih besar */
+            display: block; /* Memastikan teks berada di baris sendiri */
+            margin-bottom: 10px; /* Memberi jarak antara judul dan tabel */
         }
-        .d-flex table td {
+        .d-flex .text-container table td {
             font-size: 1.1rem; /* Menyesuaikan ukuran font pada isi tabel */
+            padding: 5px 0; /* Memberi sedikit jarak vertikal antar baris */
+        }
+        .d-flex .text-container table td:first-child {
+            width: 80px; /* Menentukan lebar kolom pertama (Nama, Prodi, dll.) */
+            font-weight: bold; /* Menebalkan label */
+        }
+        .d-flex .text-container table td:nth-child(2) {
+            width: 15px; /* Lebar untuk tanda ":" */
         }
     </style>
 </head>
 <body>
 
-    <!-- Sidebar -->
     <div class="sidebar">
         <h6>Menu</h6>
         <hr>
@@ -81,17 +94,14 @@
         </ul>
     </div>
 
-    <!-- Content -->
     <div class="content">
         <h2>About</h2>
         <hr>
-        <div class="d-flex align-items-center mb-4">
-            <div class="profile-picture me-4">
+        <div class="d-flex align-items-start mb-4"> <div class="profile-picture me-4">
                  <img src="{{ asset('images/fotonadinta.jpg') }}" alt="Foto Nadinta">
             </div>
-            <div>
-                <strong>Aplikasi ini dibuat oleh:</strong>
-                <table class="ms-3 mt-1">
+            <div class="text-container"> <strong>Aplikasi ini dibuat oleh:</strong>
+                <table>
                     <tbody>
                         <tr>
                             <td>Nama</td>
@@ -111,7 +121,7 @@
                         <tr>
                             <td>Tanggal</td>
                             <td>:</td>
-                            <td>14 September 2025</td>
+                            <td>13 September 2025</td>
                         </tr>
                     </tbody>
                 </table>
