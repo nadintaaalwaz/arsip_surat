@@ -47,13 +47,21 @@ class SuratController extends Controller
             'file_surat' => 'required|file|mimes:pdf|max:5120', // 5MB
         ]);
 
-        $path = $request->file('file_surat')->store('surat', 'public');
+        // Simpan file ke storage/app/public/surat
+        $file = $request->file('file_surat');
+        $path = $file->store('surat', 'public');
+        $originalName = $file->getClientOriginalName();
 
-        $validatedData['nama_file'] = $path;
-        $validatedData['tanggal_upload'] = Carbon::now('Asia/Jakarta');
-
-        Surat::create($validatedData);
-
+        // Buat record baru di database
+        $surat = new Surat;
+        $surat->nomor_surat = $validatedData['nomor_surat'];
+        $surat->judul_surat = $validatedData['judul_surat'];
+        $surat->kategori_id = $validatedData['kategori_id'];
+        $surat->nama_file = $path; // Nama file di storage
+        $surat->nama_asli_file = $originalName; // Nama file asli
+        $surat->tanggal_upload = Carbon::now('Asia/Jakarta');
+        $surat->save();
+        
         return redirect()->route('surat.create')->with('success', 'Data berhasil disimpan.');
     }
 
@@ -66,11 +74,13 @@ class SuratController extends Controller
     }
 
     /**
-     * Mengunduh file arsip surat.
+     * Mengunduh file arsip surat dengan nama asli.
      */
     public function download(Surat $surat)
     {
-        return Storage::disk('public')->download($surat->nama_file);
+        // Pastikan nama asli file tidak kosong
+        $fileName = $surat->nama_asli_file ?? 'dokumen-surat.pdf';
+        return Storage::disk('public')->download($surat->nama_file, $fileName);
     }
 
     /**
