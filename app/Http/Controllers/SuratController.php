@@ -6,6 +6,7 @@ use App\Models\Surat;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Carbon; // Pastikan Carbon sudah diimpor
 
 class SuratController extends Controller
 {
@@ -14,7 +15,8 @@ class SuratController extends Controller
      */
     public function index(Request $request)
     {
-        $search = $request->query('search'); 
+        // Menggunakan 'search' sesuai dengan yang ada di controller
+        $search = $request->query('search');
         $surat = Surat::with('kategori')
             ->when($search, function ($query, $search) {
                 $query->where('judul_surat', 'like', "%{$search}%");
@@ -39,23 +41,24 @@ class SuratController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'nomor_surat' => 'required|string|max:255|unique:surat,nomor_surat',
             'judul_surat' => 'required|string|max:255',
             'kategori_id' => 'required|exists:kategori,id_kategori',
-            'file_surat' => 'required|file|mimes:pdf|max:5120',
+            'file_surat' => 'required|file|mimes:pdf|max:5120', // 5MB
         ]);
 
+        // Simpan file ke storage/app/public/surat
         $path = $request->file('file_surat')->store('surat', 'public');
 
-        Surat::create([
-            'nomor_surat' => $request->nomor_surat,
-            'judul_surat' => $request->judul_surat,
-            'kategori_id' => $request->kategori_id,
-            'nama_file' => $path,
-            'tanggal_upload' => now(),
-        ]);
+        // Buat record baru di database
+        // Gunakan Carbon::now('Asia/Jakarta') untuk memastikan waktu WIB
+        $validatedData['nama_file'] = $path;
+        $validatedData['tanggal_upload'] = Carbon::now('Asia/Jakarta');
 
+        Surat::create($validatedData);
+
+        // Redirect ke halaman create dengan pesan sukses
         return redirect()->route('surat.create')->with('success', 'Data berhasil disimpan.');
     }
 
@@ -103,7 +106,9 @@ class SuratController extends Controller
         ];
 
         if ($request->hasFile('file_surat')) {
+            // Hapus file lama jika ada
             Storage::disk('public')->delete($surat->nama_file);
+            // Simpan file baru
             $data['nama_file'] = $request->file('file_surat')->store('surat', 'public');
         }
 
@@ -117,7 +122,9 @@ class SuratController extends Controller
      */
     public function destroy(Surat $surat)
     {
+        // Hapus file dari storage
         Storage::disk('public')->delete($surat->nama_file);
+        // Hapus record dari database
         $surat->delete();
 
         return redirect()->route('surat.index')->with('success', 'Data berhasil dihapus.');

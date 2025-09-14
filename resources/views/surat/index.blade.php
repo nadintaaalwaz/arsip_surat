@@ -66,30 +66,32 @@
 </head>
 <body>
 
-    <!-- Sidebar -->
+    {{-- Sidebar --}}
     <div class="sidebar">
         <h6>Menu</h6>
         <hr>
         <ul class="nav flex-column">
             <li class="nav-item"><a href="{{ route('surat.index') }}" class="nav-link"><i class="bi bi-star-fill text-dark me-2"></i>Arsip</a></li>
             <li class="nav-item"><a href="{{ route('kategori.index') }}" class="nav-link"><i class="bi bi-journal-bookmark-fill text-dark me-2"></i>Kategori Surat</a></li>
+            {{-- Pastikan route 'about' sudah didefinisikan --}}
             <li class="nav-item"><a href="{{ route('about') }}" class="nav-link"><i class="bi bi-info-circle-fill text-dark me-2"></i>About</a></li>
         </ul>
     </div>
 
-    <!-- Content -->
+    {{-- Content --}}
     <div class="content">
         <h2>Arsip Surat</h2>
         <p>Berikut ini adalah surat-surat yang telah terbit dan diarsipkan. <br>
         Klik <b>"Lihat"</b> pada kolom aksi untuk menampilkan surat.</p>
 
-        <!-- Search -->
+        {{-- Search --}}
         <form action="{{ route('surat.index') }}" method="GET" class="d-flex mb-3">
-            <input type="text" name="q" class="form-control me-2" placeholder="Cari surat..." value="{{ request('q') }}">
+            {{-- Ubah name="q" menjadi name="search" agar sesuai dengan controller --}}
+            <input type="text" name="search" class="form-control me-2" placeholder="Cari surat..." value="{{ request('search') }}">
             <button class="btn btn-dark" type="submit">Cari</button>
         </form>
 
-        <!-- Tabel -->
+        {{-- Tabel --}}
         <table class="table table-bordered">
             <thead class="table-light">
                 <tr>
@@ -101,60 +103,39 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Contoh data dummy -->
-                <tr>
-                    <td>2022/PD3/TU/001</td>
-                    <td>Pengumuman</td>
-                    <td>Nota Dinas WFH</td>
-                    <td>2023-06-21 17:23</td>
-                    <td>
-                        <form action="#" method="POST" class="d-inline" onsubmit="return confirm('Yakin hapus surat ini?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-hapus">Hapus</button>
-                        </form>
-                        <a href="#" class="btn btn-sm btn-unduh">Unduh</a>
-                        <a href="#" class="btn btn-sm btn-lihat">Lihat >></a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>2022/PD2/TU/022</td>
-                    <td>Undangan</td>
-                    <td>Undangan Halal Bi Halal</td>
-                    <td>2023-04-21 18:23</td>
-                    <td>
-                        <form action="#" method="POST" class="d-inline" onsubmit="return confirm('Yakin hapus surat ini?')">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-hapus">Hapus</button>
-                        </form>
-                        <a href="#" class="btn btn-sm btn-unduh">Unduh</a>
-                        <a href="#" class="btn btn-sm btn-lihat">Lihat >></a>
-                    </td>
-                </tr>
-                <!-- Akhir data dummy -->
-                @foreach($surat as $s)
+                {{-- Data dummy dihapus, akan diganti dengan data dari loop --}}
+                @forelse($surat as $s)
                 <tr>
                     <td>{{ $s->nomor_surat }}</td>
                     <td>{{ $s->kategori->nama_kategori }}</td>
                     <td>{{ $s->judul_surat }}</td>
-                    <td>{{ $s->tanggal_upload }}</td>
+                    {{-- Format tanggal agar lebih mudah dibaca, gunakan Carbon jika perlu --}}
+                    <td>{{ \Carbon\Carbon::parse($s->tanggal_upload)->format('d M Y H:i') }}</td>
                     <td>
-                        <!-- Tombol aksi -->
-                        <form action="{{ route('surat.destroy', $s->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin hapus surat ini?')">
+                        {{-- Tombol aksi --}}
+                        <form action="{{ route('surat.destroy', $s->id_surat) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin hapus surat ini?')">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-sm btn-hapus">Hapus</button>
                         </form>
-                        <a href="{{ route('surat.download', $s->id) }}" class="btn btn-sm btn-unduh">Unduh</a>
-                        <a href="{{ route('surat.show', $s->id) }}" class="btn btn-sm btn-lihat">Lihat >></a>
+                        <a href="{{ route('surat.download', $s->id_surat) }}" class="btn btn-sm btn-unduh">Unduh</a>
+                        <a href="{{ route('surat.show', $s->id_surat) }}" class="btn btn-sm btn-lihat">Lihat >></a>
                     </td>
                 </tr>
-                @endforeach
+                @empty
+                <tr>
+                    <td colspan="5" class="text-center">Belum ada data surat yang diarsipkan.</td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
 
-        <!-- Tombol arsipkan -->
+        {{-- Pagination --}}
+        <div class="d-flex justify-content-center">
+            {{ $surat->links() }}
+        </div>
+
+        {{-- Tombol arsipkan --}}
         <a href="{{ route('surat.create') }}" class="btn btn-dark mt-3">Arsipkan Surat..</a>
     </div>
 

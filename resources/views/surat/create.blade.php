@@ -40,18 +40,19 @@
 </head>
 <body>
 
-    <!-- Sidebar -->
+    {{-- Sidebar --}}
     <div class="sidebar">
         <h6>Menu</h6>
         <hr>
         <ul class="nav flex-column">
             <li class="nav-item"><a href="{{ route('surat.index') }}" class="nav-link"><i class="bi bi-star-fill text-dark me-2"></i>Arsip</a></li>
             <li class="nav-item"><a href="{{ route('kategori.index') }}" class="nav-link"><i class="bi bi-journal-bookmark-fill text-dark me-2"></i>Kategori Surat</a></li>
+            {{-- Pastikan route 'about' sudah didefinisikan di routes/web.php --}}
             <li class="nav-item"><a href="{{ route('about') }}" class="nav-link"><i class="bi bi-info-circle-fill text-dark me-2"></i>About</a></li>
         </ul>
     </div>
 
-    <!-- Content -->
+    {{-- Content --}}
     <div class="content">
         <h2>Arsip Surat >> Unggah</h2>
         <p>Unggah surat yang telah terbit pada form ini untuk diarsipkan. <br>
@@ -60,8 +61,8 @@
             <li>Gunakan file berformat PDF</li>
         </ul>
         </p>
-        
-        <!-- Pesan Sukses -->
+
+        {{-- Tampilkan pesan sukses dari session --}}
         @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {{ session('success') }}
@@ -69,30 +70,43 @@
             </div>
         @endif
 
+        {{-- Tampilkan pesan error validasi jika ada --}}
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <form action="{{ route('surat.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="mb-3">
                 <label for="nomor_surat" class="form-label">Nomor Surat</label>
-                <input type="text" class="form-control" id="nomor_surat" name="nomor_surat" required>
+                <input type="text" class="form-control" id="nomor_surat" name="nomor_surat" value="{{ old('nomor_surat') }}" required>
             </div>
             <div class="mb-3">
                 <label for="kategori_id" class="form-label">Kategori</label>
                 <select class="form-select" id="kategori_id" name="kategori_id" required>
                     <option value="">Pilih Kategori</option>
                     @foreach($kategoris as $kategori)
-                        <option value="{{ $kategori->id_kategori }}">{{ $kategori->nama_kategori }}</option>
+                        <option value="{{ $kategori->id_kategori }}" {{ old('kategori_id') == $kategori->id_kategori ? 'selected' : '' }}>
+                            {{ $kategori->nama_kategori }}
+                        </option>
                     @endforeach
                 </select>
             </div>
             <div class="mb-3">
                 <label for="judul_surat" class="form-label">Judul</label>
-                <input type="text" class="form-control" id="judul_surat" name="judul_surat" required>
+                <input type="text" class="form-control" id="judul_surat" name="judul_surat" value="{{ old('judul_surat') }}" required>
             </div>
             <div class="mb-3">
                 <label for="file_surat" class="form-label">File Surat (PDF)</label>
                 <input type="file" class="form-control" id="file_surat" name="file_surat" accept=".pdf" required>
             </div>
-            
+
             <a href="{{ route('surat.index') }}" class="btn btn-secondary me-2"> << Kembali</a>
             <button type="submit" class="btn btn-dark">Simpan</button>
         </form>
