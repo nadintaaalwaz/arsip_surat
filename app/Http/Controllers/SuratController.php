@@ -15,7 +15,7 @@ class SuratController extends Controller
      */
     public function index(Request $request)
     {
-        // kalau ada pencarian
+        
         if ($request->filled('search')) {
             $search = $request->search;
             $surat = Surat::with('kategori')
@@ -23,14 +23,12 @@ class SuratController extends Controller
                 ->orderBy('tanggal_upload', 'desc')
                 ->paginate(10);
 
-            // redirect biar URL bersih, hasil disimpan di session
             return redirect()->route('surat.index')->with([
                 'search_results' => $surat,
                 'search_query' => $search
             ]);
         }
 
-        // kalau habis redirect, ambil dari session
         if (session()->has('search_results')) {
             $surat = session('search_results');
         } else {

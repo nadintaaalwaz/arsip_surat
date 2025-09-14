@@ -30,7 +30,7 @@
         }
         .btn-unduh {
             background: #ffc107;
-            color: #212529; /* Warna teks gelap */
+            color: #212529; 
             font-weight: bold;
         }
         .btn-hapus {
@@ -69,9 +69,9 @@
         <h6>Menu</h6>
         <hr>
         <ul class="nav flex-column">
-            <li class="nav-item"><a href="{{ route('surat.index') }}" class="nav-link"><i class="bi bi-star-fill text-dark me-2"></i>Arsip</a></li>
-            <li class="nav-item"><a href="{{ route('kategori.index') }}" class="nav-link"><i class="bi bi-journal-bookmark-fill text-dark me-2"></i>Kategori Surat</a></li>
-            <li class="nav-item"><a href="{{ route('about') }}" class="nav-link"><i class="bi bi-info-circle-fill text-dark me-2"></i>About</a></li>
+            <li class="nav-item"><a href="{{ route('surat.index') }}" class="nav-link text-dark"><i class="bi bi-star-fill me-2"></i>Arsip</a></li>
+            <li class="nav-item"><a href="{{ route('kategori.index') }}" class="nav-link text-dark"><i class="bi bi-journal-bookmark-fill me-2"></i>Kategori Surat</a></li>
+            <li class="nav-item"><a href="{{ route('about') }}" class="nav-link text-dark"><i class="bi bi-info-circle-fill me-2"></i>About</a></li>
         </ul>
     </div>
 

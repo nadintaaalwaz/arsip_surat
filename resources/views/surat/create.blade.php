@@ -45,16 +45,14 @@
         <h6>Menu</h6>
         <hr>
         <ul class="nav flex-column">
-            <li class="nav-item"><a href="{{ route('surat.index') }}" class="nav-link"><i class="bi bi-star-fill text-dark me-2"></i>Arsip</a></li>
-            <li class="nav-item"><a href="{{ route('kategori.index') }}" class="nav-link"><i class="bi bi-journal-bookmark-fill text-dark me-2"></i>Kategori Surat</a></li>
-            {{-- Pastikan route 'about' sudah didefinisikan di routes/web.php --}}
-            <li class="nav-item"><a href="{{ route('about') }}" class="nav-link"><i class="bi bi-info-circle-fill text-dark me-2"></i>About</a></li>
+            <li class="nav-item"><a href="{{ route('surat.index') }}" class="nav-link text-dark"><i class="bi bi-star-fill me-2"></i>Arsip</a></li>
+            <li class="nav-item"><a href="{{ route('kategori.index') }}" class="nav-link text-dark"><i class="bi bi-journal-bookmark-fill me-2"></i>Kategori Surat</a></li>
+            <li class="nav-item"><a href="{{ route('about') }}" class="nav-link text-dark"><i class="bi bi-info-circle-fill me-2"></i>About</a></li>
         </ul>
     </div>
 
     {{-- Content --}}
     <div class="content">
-        {{-- Tampilkan judul yang berbeda untuk Create dan Edit --}}
         <h2>Arsip Surat >> {{ isset($surat) ? 'Edit' : 'Unggah' }}</h2>
         <p>{{ isset($surat) ? 'Perbarui data surat yang telah terbit pada form ini.' : 'Unggah surat yang telah terbit pada form ini untuk diarsipkan.' }} <br>
         <span style="font-weight: bold;">Catatan:</span><br>
@@ -63,7 +61,6 @@
         </ul>
         </p>
 
-        {{-- Tampilkan pesan sukses dari session --}}
         @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {{ session('success') }}
@@ -71,7 +68,6 @@
             </div>
         @endif
 
-        {{-- Tampilkan pesan error validasi jika ada --}}
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
@@ -82,17 +78,14 @@
             </div>
         @endif
 
-        {{-- Sesuaikan action form dan method berdasarkan apakah ini create atau edit --}}
         <form action="{{ isset($surat) ? route('surat.update', $surat->id_surat) : route('surat.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
-            {{-- Tambahkan @method('PUT') jika ini adalah form edit --}}
             @if(isset($surat))
                 @method('PUT')
             @endif
 
             <div class="mb-3">
                 <label for="nomor_surat" class="form-label">Nomor Surat</label>
-                {{-- Gunakan value="{{ old('nomor_surat', $surat->nomor_surat ?? '') }}" untuk menampilkan data lama atau data dari database --}}
                 <input type="text" class="form-control" id="nomor_surat" name="nomor_surat" value="{{ old('nomor_surat', $surat->nomor_surat ?? '') }}" required>
             </div>
             <div class="mb-3">
@@ -113,7 +106,6 @@
             <div class="mb-3">
                 <label for="file_surat" class="form-label">File Surat (PDF)</label>
                 <input type="file" class="form-control" id="file_surat" name="file_surat" accept=".pdf" {{ isset($surat) ? '' : 'required' }}>
-                {{-- Tampilkan nama file lama jika ada --}}
                 @if(isset($surat) && $surat->nama_file)
                     <small class="form-text text-muted">File saat ini: {{ basename($surat->nama_file) }}</small>
                 @endif

@@ -12,7 +12,6 @@ class Surat extends Model
     protected $table = 'surat';
     protected $primaryKey = 'id_surat';
 
-    // TAMBAHKAN 'nomor_surat' KE DALAM ARRAY INI
     protected $fillable = ['nomor_surat', 'judul_surat', 'kategori_id', 'nama_file','nama_asli_file', 'tanggal_upload'];
 
     // Relasi dengan model Kategori
