@@ -83,7 +83,7 @@
 
         {{-- Search --}}
         <form action="{{ route('surat.index') }}" method="GET" class="d-flex mb-3">
-            <input type="text" name="search" class="form-control me-2" placeholder="Cari surat..." value="{{ request('search') }}">
+            <input type="text" name="search" class="form-control me-2" placeholder="Search...">
             <button class="btn btn-dark" type="submit">Cari</button>
         </form>
 
@@ -140,6 +140,7 @@
         {{-- Tombol arsipkan --}}
         <a href="{{ route('surat.create') }}" class="btn btn-dark mt-3">Arsipkan Surat..</a>
     </div>
+    
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

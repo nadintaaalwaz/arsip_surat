@@ -15,15 +15,29 @@ class SuratController extends Controller
      */
     public function index(Request $request)
     {
-        $search = $request->query('search');
-        $surat = Surat::with('kategori')
-            ->when($search, function ($query, $search) {
-                $query->where('judul_surat', 'like', "%{$search}%");
-            })
-            ->orderBy('tanggal_upload', 'desc')
-            ->paginate(10);
+        // kalau ada pencarian
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $surat = Surat::with('kategori')
+                ->where('judul_surat', 'like', "%{$search}%") // cari di mana saja
+                ->orderBy('tanggal_upload', 'desc')
+                ->paginate(10);
 
-        return view('surat.index', compact('surat', 'search'));
+            // redirect biar URL bersih, hasil disimpan di session
+            return redirect()->route('surat.index')->with([
+                'search_results' => $surat,
+                'search_query' => $search
+            ]);
+        }
+
+        // kalau habis redirect, ambil dari session
+        if (session()->has('search_results')) {
+            $surat = session('search_results');
+        } else {
+            $surat = Surat::with('kategori')->orderBy('tanggal_upload', 'desc')->paginate(10);
+        }
+
+        return view('surat.index', compact('surat'));
     }
 
     /**
