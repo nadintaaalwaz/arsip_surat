@@ -52,8 +52,6 @@
             background-color: #e2e6ea;
             color: #0d6efd;
         }
-
-        /* Responsive Styles */
         @media (max-width: 768px) {
             .sidebar {
                 display: none;
@@ -73,7 +71,6 @@
         <ul class="nav flex-column">
             <li class="nav-item"><a href="{{ route('surat.index') }}" class="nav-link"><i class="bi bi-star-fill text-dark me-2"></i>Arsip</a></li>
             <li class="nav-item"><a href="{{ route('kategori.index') }}" class="nav-link"><i class="bi bi-journal-bookmark-fill text-dark me-2"></i>Kategori Surat</a></li>
-            {{-- Pastikan route 'about' sudah didefinisikan --}}
             <li class="nav-item"><a href="{{ route('about') }}" class="nav-link"><i class="bi bi-info-circle-fill text-dark me-2"></i>About</a></li>
         </ul>
     </div>
@@ -81,15 +78,22 @@
     {{-- Content --}}
     <div class="content">
         <h2>Arsip Surat</h2>
-        <p>Berikut ini adalah surat-surat yang telah terbit dan diarsipkan. <br>
+        <p>Berikut ini adalah surat-surat yang telah terbit dan diarsipkan. 
         Klik <b>"Lihat"</b> pada kolom aksi untuk menampilkan surat.</p>
 
         {{-- Search --}}
         <form action="{{ route('surat.index') }}" method="GET" class="d-flex mb-3">
-            {{-- Ubah name="q" menjadi name="search" agar sesuai dengan controller --}}
             <input type="text" name="search" class="form-control me-2" placeholder="Cari surat..." value="{{ request('search') }}">
             <button class="btn btn-dark" type="submit">Cari</button>
         </form>
+
+        {{-- Tampilkan pesan sukses dari session --}}
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
 
         {{-- Tabel --}}
         <table class="table table-bordered">
@@ -103,17 +107,15 @@
                 </tr>
             </thead>
             <tbody>
-                {{-- Data dummy dihapus, akan diganti dengan data dari loop --}}
                 @forelse($surat as $s)
                 <tr>
                     <td>{{ $s->nomor_surat }}</td>
                     <td>{{ $s->kategori->nama_kategori }}</td>
                     <td>{{ $s->judul_surat }}</td>
-                    {{-- Format tanggal agar lebih mudah dibaca, gunakan Carbon jika perlu --}}
-                    <td>{{ \Carbon\Carbon::parse($s->tanggal_upload)->format('d M Y H:i') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($s->tanggal_upload)->isoFormat('D MMMM YYYY, H:mm') }}</td>
                     <td>
                         {{-- Tombol aksi --}}
-                        <form action="{{ route('surat.destroy', $s->id_surat) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin hapus surat ini?')">
+                        <form action="{{ route('surat.destroy', $s->id_surat) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah anda yakin ingin menghapus arsip surat ini?')">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-sm btn-hapus">Hapus</button>
