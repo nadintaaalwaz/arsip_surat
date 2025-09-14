@@ -67,7 +67,7 @@
 
             {{-- Menentukan action form berdasarkan mode (edit atau create) --}}
             @php
-                $actionUrl = isset($kategori) ? route('kategori.update', $kategori->id) : route('kategori.store');
+                $actionUrl = isset($kategori) ? route('kategori.update', $kategori->id_kategori) : route('kategori.store');
             @endphp
 
             <form action="{{ $actionUrl }}" method="POST">
@@ -81,7 +81,7 @@
                     <label for="id_kategori" class="col-sm-3 col-form-label form-label">ID (Auto Increment)</label>
                     <div class="col-sm-9">
                         {{-- ID ditampilkan jika mode edit, jika mode create akan terlihat kosong/placeholder --}}
-                        <input type="text" class="form-control" id="id_kategori" value="{{ isset($kategori) ? $kategori->id : 'Otomatis' }}" disabled readonly>
+                        <input type="text" class="form-control" id="id_kategori" value="{{ isset($kategori) ? $kategori->id_kategori : 'Otomatis' }}" disabled readonly>
                     </div>
                 </div>
                 <div class="mb-3 row">
@@ -98,7 +98,7 @@
                     <label for="keterangan" class="col-sm-3 col-form-label form-label">Judul</label>
                     <div class="col-sm-9">
                         <textarea class="form-control @error('keterangan') is-invalid @enderror" id="keterangan" name="keterangan" rows="5" required>{{ old('keterangan', isset($kategori) ? $kategori->keterangan : '') }}</textarea>
-                         @error('keterangan')
+                           @error('keterangan')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>

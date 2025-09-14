@@ -12,5 +12,15 @@ class Kategori extends Model
     protected $table = 'kategori';
     protected $primaryKey = 'id_kategori';
     public $timestamps = true;
-    protected $fillable = ['nama_kategori'];
+    protected $fillable = ['nama_kategori', 'keterangan'];
+
+    /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName()
+    {
+        return 'id_kategori';
+    }
 }

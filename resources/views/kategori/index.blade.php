@@ -26,13 +26,13 @@
         }
         .table td, .table th {
             vertical-align: middle;
-            text-align: left; /* Teks di sel kiri */
+            text-align: left; 
         }
         .table th:first-child, .table td:first-child {
-            text-align: center; /* Kolom ID Kategori di tengah */
+            text-align: center; 
         }
         .table th:last-child, .table td:last-child {
-            text-align: center; /* Kolom Aksi di tengah */
+            text-align: center; 
         }
         .btn-hapus {
             background: #dc3545;
@@ -54,7 +54,6 @@
             color: #0d6efd;
         }
         
-        /* CSS untuk highlight sidebar aktif dihapus agar sama dengan file surat/index.blade.php */
 
         /* Responsive Styles */
         @media (max-width: 768px) {
@@ -69,12 +68,11 @@
 </head>
 <body>
 
-    <!-- Sidebar (disamakan dengan file surat/index.blade.php) -->
+    <!-- Sidebar  -->
     <div class="sidebar">
         <h6>Menu</h6>
         <hr>
         <ul class="nav flex-column">
-            {{-- Tautan diperbaiki menggunakan helper route() --}}
             <li class="nav-item"><a href="{{ route('surat.index') }}" class="nav-link"><i class="bi bi-star-fill text-dark me-2"></i>Arsip</a></li>
             <li class="nav-item"><a href="{{ route('kategori.index') }}" class="nav-link"><i class="bi bi-journal-bookmark-fill text-dark me-2"></i>Kategori Surat</a></li>
             <li class="nav-item"><a href="{{ route('about') }}" class="nav-link"><i class="bi bi-info-circle-fill text-dark me-2"></i>About</a></li>
@@ -87,13 +85,13 @@
         <p>Berikut ini adalah kategori yang bisa digunakan untuk melabeli surat. <br>
         Klik "Tambah" pada kolom aksi untuk menambahkan kategori baru.</p>
 
-        <!-- Search (disesuaikan agar full-width seperti di halaman surat) -->
+        <!-- Search  -->
         <form action="{{ route('kategori.index') }}" method="GET" class="d-flex mb-3">
             <input type="text" name="q" class="form-control me-2" placeholder="Cari kategori...">
             <button class="btn btn-dark" type="submit">Cari</button>
         </form>
 
-        <!-- Tabel dengan data dummy -->
+        <!-- Tabel dengan data dari database -->
         <table class="table table-bordered table-striped">
             <thead class="table-light">
                 <tr>
@@ -104,45 +102,28 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Data statis untuk preview -->
+                @forelse($kategori as $item)
                 <tr>
-                    <td class="text-center">1</td>
-                    <td>Pengumuman</td>
-                    <td>Surat yang terkait dengan pengumuman untuk internal maupun eksternal.</td>
+                    <td class="text-center">{{ $item->id_kategori }}</td>
+                    <td>{{ $item->nama_kategori }}</td>
+                    <td>{{ $item->keterangan }}</td>
                     <td class="text-center">
-                        <form action="#" method="POST" class="d-inline">
+                        <form action="{{ route('kategori.destroy', $item->id_kategori) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
+                            @csrf
+                            @method('DELETE')
                             <button type="submit" class="btn btn-sm btn-hapus">Hapus</button>
                         </form>
-                        <a href="#" class="btn btn-sm btn-edit">Edit</a>
+                        <a href="{{ route('kategori.edit', $item->id_kategori) }}" class="btn btn-sm btn-edit">Edit</a>
                     </td>
                 </tr>
+                @empty
                 <tr>
-                    <td class="text-center">2</td>
-                    <td>Undangan</td>
-                    <td>Berisi undangan rapat, koordinasi, halal bi halal, dan sebagainya.</td>
-                    <td class="text-center">
-                         <form action="#" method="POST" class="d-inline">
-                            <button type="submit" class="btn btn-sm btn-hapus">Hapus</button>
-                        </form>
-                        <a href="#" class="btn btn-sm btn-edit">Edit</a>
-                    </td>
+                    <td colspan="4" class="text-center">Tidak ada data kategori yang ditemukan.</td>
                 </tr>
-                 <tr>
-                    <td class="text-center">3</td>
-                    <td>Nota Dinas</td>
-                    <td>Surat resmi yang bersifat internal antar unit kerja di dalam instansi.</td>
-                    <td class="text-center">
-                         <form action="#" method="POST" class="d-inline">
-                            <button type="submit" class="btn btn-sm btn-hapus">Hapus</button>
-                        </form>
-                        <a href="#" class="btn btn-sm btn-edit">Edit</a>
-                    </td>
-                </tr>
-                <!-- Akhir data statis -->
+                @endforelse
             </tbody>
         </table>
 
-        <!-- Tombol Tambah Kategori Baru (diperbaiki href-nya) -->
         <a href="{{ route('kategori.create') }}" class="btn btn-success mt-3">
             <i class="bi bi-plus-lg"></i> Tambah Kategori Baru...
         </a>
@@ -151,4 +132,3 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-

@@ -55,7 +55,8 @@ class KategoriController extends Controller
      */
     public function edit(Kategori $kategori)
     {
-        //
+        // Menampilkan form edit dengan data kategori yang dipilih
+        return view('kategori.create', compact('kategori'));
     }
 
     /**
@@ -63,7 +64,17 @@ class KategoriController extends Controller
      */
     public function update(Request $request, Kategori $kategori)
     {
-        //
+        // Validasi data yang masuk dari form
+        $validated = $request->validate([
+            'nama_kategori' => 'required|string|max:100',
+            'keterangan' => 'required|string',
+        ]);
+
+        // Memperbarui data kategori
+        $kategori->update($validated);
+
+        // Redirect kembali ke halaman index dengan pesan sukses
+        return redirect()->route('kategori.index')->with('success', 'Kategori berhasil diperbarui!');
     }
 
     /**
@@ -71,6 +82,10 @@ class KategoriController extends Controller
      */
     public function destroy(Kategori $kategori)
     {
-        //
+        // Menghapus data kategori
+        $kategori->delete();
+
+        // Redirect kembali ke halaman index dengan pesan sukses
+        return redirect()->route('kategori.index')->with('success', 'Kategori berhasil dihapus!');
     }
 }
