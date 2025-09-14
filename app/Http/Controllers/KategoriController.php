@@ -14,7 +14,9 @@ class KategoriController extends Controller
     {
         if ($request->filled('q')) {
             $search = $request->q;
-            $kategori = Kategori::where('nama_kategori', 'like', "{$search}%")->get();
+            $kategori = Kategori::where('nama_kategori', 'like', "%{$search}%")
+                                ->orWhere('keterangan', 'like', "%{$search}%")
+                                ->get();
 
             // Kirim hasil pencarian sekali, lalu redirect agar URL kembali bersih
             return redirect()->route('kategori.index')->with([
@@ -29,7 +31,6 @@ class KategoriController extends Controller
 
         return view('kategori.index', compact('kategori', 'search_query'));
     }
-
 
     /**
      * Show the form for creating a new resource.
