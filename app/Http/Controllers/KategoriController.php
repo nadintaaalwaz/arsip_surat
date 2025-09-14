@@ -10,11 +10,26 @@ class KategoriController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $kategori = Kategori::all();
-        return view('kategori.index', compact('kategori'));
+        if ($request->filled('q')) {
+            $search = $request->q;
+            $kategori = Kategori::where('nama_kategori', 'like', "{$search}%")->get();
+
+            // Kirim hasil pencarian sekali, lalu redirect agar URL kembali bersih
+            return redirect()->route('kategori.index')->with([
+                'search_results' => $kategori,
+                'search_query' => $search
+            ]);
+        }
+
+        // Ambil data hasil pencarian dari session, kalau ada
+        $kategori = session('search_results') ?? Kategori::all();
+        $search_query = session('search_query') ?? '';
+
+        return view('kategori.index', compact('kategori', 'search_query'));
     }
+
 
     /**
      * Show the form for creating a new resource.

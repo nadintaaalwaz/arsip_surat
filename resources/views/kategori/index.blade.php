@@ -87,7 +87,7 @@
 
         <!-- Search  -->
         <form action="{{ route('kategori.index') }}" method="GET" class="d-flex mb-3">
-            <input type="text" name="q" class="form-control me-2" placeholder="Cari kategori...">
+            <input type="text" name="q" class="form-control me-2" placeholder="Search..." value="{{ $search_query ?? '' }}">
             <button class="btn btn-dark" type="submit">Cari</button>
         </form>
 
